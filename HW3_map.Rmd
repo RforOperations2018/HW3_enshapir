@@ -1,0 +1,19 @@
+---
+title: "HW3"
+author: "enshapir"
+date: "September 25, 2018"
+output: html_document
+---
+
+```{r load libraries}
+library(tidyverse)
+require(rgdal)
+require(leaflet)
+require(leaflet.extras)
+
+```
+
+```{r load data}
+
+```
+
