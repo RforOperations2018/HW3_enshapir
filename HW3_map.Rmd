@@ -8,9 +8,15 @@ output: html_document
 ```{r load libraries}
 library(tidyverse)
 library(rjson)
+library(sf)
+library(maptools)
 library(rgdal)
 library(leaflet)
 library(leaflet.extras)
+
+https://data.wprdc.org/dataset/allegheny-county-air-quality
+https://data.wprdc.org/dataset/city-trees
+https://data.wprdc.org/dataset/allegheny-county-major-rivers
 
 
 ```
@@ -29,11 +35,19 @@ sandy.track.fp <- file.path('data', 'al182012_best_track', 'al182012_lin.shp', f
 sandy.raidus.fp <- file.path('data', 'al182012_best_track', 'al182012_radii.shp', fsep = .Platform$file.sep)
 sandy.surge.fp <- file.path('data', 'al182012_psurge9_2012102918', 'al182012_2012102918_gt9.shp', fsep = .Platform$file.sep)
 us.cities.fp <- file.path('data', 'cities.json', fsep = .Platform$file.sep)
+sandy.kmz.fp <- file.path('data', 'al182012.kml', fsep = .Platform$file.sep)
+
+snow.routs.fp <- file.path('data2', 'Allegheny_County_Snow_Route_Centerlines_20162017.geojson', fsep = .Platform$file.sep)
+
+Allegheny_County_Snow_Route_Centerlines_20162017.geojson
+
+snow.routs <- readOGR(snow.routs.fp)
 
 sandy.track <- readOGR(sandy.track.fp)
 sandy.radius <- readOGR(sandy.raidus.fp)
 sandy.surge <- readOGR(sandy.surge.fp)
 us.cities.json <- fromJSON(file=us.cities.fp)
+sandy.kmz <- readOGR(sandy.kmz.fp)
 
 
 city = c()
@@ -59,7 +73,40 @@ us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, pop
 ```
 
 ```{r}
+
+
+test1 <- st_read(sandy.track.fp)
+test2 <- st_read(sandy.raidus.fp)
+test
+for (i in 1:13) {
+  test1$geometry[i] <- st_cast(x = test1$geometry[i], to = "MULTILINESTRING" )
+}
+
+
+
+#4326
+proj4string(sandy.track)
+sandy.track1 <-  spTransform(sandy.track, CRS("+init=epsg:4326"))
+proj4string(sandy.track1)
+
+sand.track2 <- st_as_sf(sandy.track)
+
+factpal <- colorFactor(topo.colors(7), test1$STROMTYPE, palette = )
+
 #plot sandy track and color based on storm type
+leaflet()%>% addTiles() %>%
+  addPolylines(data = test1, color = ~factpal(STORMTYPE))
+#%>% 
+ # addPolygons(data = test2)
+
+
+
+leaflet(test1[[1]]) %>% addPolylines(lng=~lng,lat=~lat)
+
+plot(world["continent"], reset = FALSE)
+plot(test1)
+test1$geometry[[1]][2]
+
 ```
 
 
