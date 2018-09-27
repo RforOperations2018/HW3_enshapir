@@ -7,13 +7,59 @@ output: html_document
 
 ```{r load libraries}
 library(tidyverse)
-require(rgdal)
-require(leaflet)
-require(leaflet.extras)
+library(rjson)
+library(rgdal)
+library(leaflet)
+library(leaflet.extras)
+
 
 ```
 
 ```{r load data}
 
+#sandy strom track data: https://www.nhc.noaa.gov/gis/archive_besttrack_results.php?id=al18&year=2012&name=Hurricane%20SANDY
+#sandy flood data: https://www.nhc.noaa.gov/gis/archive_psurge_results.php?id=al18&year=2012&name=Hurricane%20SANDY
+#US cities with populations: https://gist.github.com/Miserlou/c5cd8364bf9b2420bb29
+
+current_file_path <- dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(current_file_path)
+
+#file path names of the data used
+sandy.track.fp <- file.path('data', 'al182012_best_track', 'al182012_lin.shp', fsep = .Platform$file.sep)
+sandy.raidus.fp <- file.path('data', 'al182012_best_track', 'al182012_radii.shp', fsep = .Platform$file.sep)
+sandy.surge.fp <- file.path('data', 'al182012_psurge9_2012102918', 'al182012_2012102918_gt9.shp', fsep = .Platform$file.sep)
+us.cities.fp <- file.path('data', 'cities.json', fsep = .Platform$file.sep)
+
+sandy.track <- readOGR(sandy.track.fp)
+sandy.radius <- readOGR(sandy.raidus.fp)
+sandy.surge <- readOGR(sandy.surge.fp)
+us.cities.json <- fromJSON(file=us.cities.fp)
+
+
+city = c()
+growth_from_2000_to_2013 = c()
+latitude = c()
+longitude = c()
+population = c()
+rank = c()
+state = c()
+
+for (i in 1:length(us.cities.json)) {
+  city[i] <- us.cities.json[[i]]$city
+  growth_from_2000_to_2013[i] <- us.cities.json[[i]]$growth_from_2000_to_2013
+  latitude[i] <- us.cities.json[[i]]$latitude
+  longitude[i] <- us.cities.json[[i]]$longitude
+  population[i] <- us.cities.json[[i]]$population
+  rank[i] <- us.cities.json[[i]]$rank
+  state[i] <- us.cities.json[[i]]$state
+}
+
+us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, population, rank, state)
+
 ```
+
+```{r}
+#plot sandy track and color based on storm type
+```
+
 
