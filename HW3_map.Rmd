@@ -5,7 +5,7 @@ date: "September 25, 2018"
 output: html_document
 ---
 
-```{r load libraries}
+```{r load libraries, include=FALSE}
 library(tidyverse)
 library(rjson)
 library(sf)
@@ -16,27 +16,23 @@ library(leaflet.extras)
 
 ```
 
-```{r load data}
+```{r load data, include=FALSE}
 
 #sandy strom track data: https://www.nhc.noaa.gov/gis/archive_besttrack_results.php?id=al18&year=2012&name=Hurricane%20SANDY
 #sandy flood data: https://www.nhc.noaa.gov/gis/archive_psurge_results.php?id=al18&year=2012&name=Hurricane%20SANDY
 #US cities with populations: https://gist.github.com/Miserlou/c5cd8364bf9b2420bb29
 
-current_file_path <- dirname(rstudioapi::getSourceEditorContext()$path)
-setwd(current_file_path)
 
 #file path names of the data used
-sandy.track.fp <- file.path('data', 'al182012_best_track', 'al182012_lin.shp', fsep = .Platform$file.sep)
-sandy.raidus.fp <- file.path('data', 'al182012_best_track', 'al182012_radii.shp', fsep = .Platform$file.sep)
-sandy.surge.fp <- file.path('data', 'al182012_psurge9_2012102918', 'al182012_2012102918_gt9.shp', fsep = .Platform$file.sep)
-us.cities.fp <- file.path('data', 'cities.json', fsep = .Platform$file.sep)
-sandy.kmz.fp <- file.path('data', 'al182012.kml', fsep = .Platform$file.sep)
+sandy.track.fp <- file.path('.', 'al182012_lin.shp', fsep = .Platform$file.sep)
+sandy.raidus.fp <- file.path('.', 'al182012_radii.shp', fsep = .Platform$file.sep)
+us.cities.fp <- file.path('.', 'cities.json', fsep = .Platform$file.sep)
+
 
 #read in data
 # leaflet only supports SF file formats for this type of data. 
 sandy.track <- st_read(sandy.track.fp)
 sandy.radius <- st_read(sandy.raidus.fp)
-sandy.surge <- st_read(sandy.surge.fp)
 #reading in a json file
 us.cities.json <- fromJSON(file=us.cities.fp)
 
@@ -71,7 +67,7 @@ us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, pop
 
 ```
 
-```{r}
+```{r echo=FALSE}
 
 #creating color pallette for map
 stormpal <- colorFactor(c("#6eff33", "#f0ff33", "#ffe333", "#ffc433", "#ff6b33", "#f32222", "#c20404"), c("Low", "Tropical Depression", "Extratropical Cyclone", "Tropical Storm", "Hurricane1", "Hurricane2", "Hurricane3"))
