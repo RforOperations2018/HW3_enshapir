@@ -40,6 +40,12 @@ sandy.surge <- st_read(sandy.surge.fp)
 #reading in a json file
 us.cities.json <- fromJSON(file=us.cities.fp)
 
+
+#reproject the data
+sandy.track$geometry <- st_transform(sandy.track$geometry, crs = '+proj=longlat +datum=WGS84')
+sandy.radius$geometry <- st_transform(sandy.radius$geometry, crs = '+proj=longlat +datum=WGS84')
+
+
 #creating vectors too pull apart the Json file with
 city = c()
 growth_from_2000_to_2013 = c()
@@ -67,32 +73,19 @@ us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, pop
 
 ```{r}
 
-
-test1 <- 
-test2 <- 
-test
-for (i in 1:13) {
-  test1$geometry[i] <- st_cast(x = test1$geometry[i], to = "MULTILINESTRING" )
-}
-
-
-
-#4326
-proj4string(sandy.track)
-sandy.track1 <-  spTransform(sandy.track, CRS("+init=epsg:4326"))
-proj4string(sandy.track1)
-
-sand.track2 <- st_as_sf(sandy.track)
-
+#creating color pallette for map
 pal <- colorNumeric(c("green", "red"), 1:2)
 
-factpal <- colorFactor(topo.colors(7), test1$STROMTYPE, palette = pal )
+factpal <- colorFactor(topo.colors(7), sandy.track$STROMTYPE)
 
 #plot sandy track and color based on storm type
 leaflet()%>% addTiles() %>%
-  addPolylines(data = test1, color = ~factpal(STORMTYPE))
-#%>% 
- # addPolygons(data = test2)
+  addPolylines(data = sandy.track, color = ~factpal(STORMTYPE), group = "Storm Track") %>% 
+  addPolygons(data = sandy.radius, group = "Storm Size") %>% 
+  addLayersControl(
+    overlayGroups = c("Storm Track",  "Storm Size"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
 
 
 
