@@ -14,11 +14,6 @@ library(rgdal)
 library(leaflet)
 library(leaflet.extras)
 
-https://data.wprdc.org/dataset/allegheny-county-air-quality
-https://data.wprdc.org/dataset/city-trees
-https://data.wprdc.org/dataset/allegheny-county-major-rivers
-
-
 ```
 
 ```{r load data}
@@ -37,19 +32,15 @@ sandy.surge.fp <- file.path('data', 'al182012_psurge9_2012102918', 'al182012_201
 us.cities.fp <- file.path('data', 'cities.json', fsep = .Platform$file.sep)
 sandy.kmz.fp <- file.path('data', 'al182012.kml', fsep = .Platform$file.sep)
 
-snow.routs.fp <- file.path('data2', 'Allegheny_County_Snow_Route_Centerlines_20162017.geojson', fsep = .Platform$file.sep)
-
-Allegheny_County_Snow_Route_Centerlines_20162017.geojson
-
-snow.routs <- readOGR(snow.routs.fp)
-
-sandy.track <- readOGR(sandy.track.fp)
-sandy.radius <- readOGR(sandy.raidus.fp)
-sandy.surge <- readOGR(sandy.surge.fp)
+#read in data
+# leaflet only supports SF file formats for this type of data. 
+sandy.track <- st_read(sandy.track.fp)
+sandy.radius <- st_read(sandy.raidus.fp)
+sandy.surge <- st_read(sandy.surge.fp)
+#reading in a json file
 us.cities.json <- fromJSON(file=us.cities.fp)
-sandy.kmz <- readOGR(sandy.kmz.fp)
 
-
+#creating vectors too pull apart the Json file with
 city = c()
 growth_from_2000_to_2013 = c()
 latitude = c()
@@ -58,6 +49,7 @@ population = c()
 rank = c()
 state = c()
 
+#pulling apart the json file into collumns
 for (i in 1:length(us.cities.json)) {
   city[i] <- us.cities.json[[i]]$city
   growth_from_2000_to_2013[i] <- us.cities.json[[i]]$growth_from_2000_to_2013
@@ -68,6 +60,7 @@ for (i in 1:length(us.cities.json)) {
   state[i] <- us.cities.json[[i]]$state
 }
 
+#creating a dataframe from the Json columns. 
 us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, population, rank, state)
 
 ```
@@ -75,8 +68,8 @@ us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, pop
 ```{r}
 
 
-test1 <- st_read(sandy.track.fp)
-test2 <- st_read(sandy.raidus.fp)
+test1 <- 
+test2 <- 
 test
 for (i in 1:13) {
   test1$geometry[i] <- st_cast(x = test1$geometry[i], to = "MULTILINESTRING" )
@@ -91,7 +84,9 @@ proj4string(sandy.track1)
 
 sand.track2 <- st_as_sf(sandy.track)
 
-factpal <- colorFactor(topo.colors(7), test1$STROMTYPE, palette = )
+pal <- colorNumeric(c("green", "red"), 1:2)
+
+factpal <- colorFactor(topo.colors(7), test1$STROMTYPE, palette = pal )
 
 #plot sandy track and color based on storm type
 leaflet()%>% addTiles() %>%
