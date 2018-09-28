@@ -13,6 +13,8 @@ library(sf)
 library(rgdal)
 library(leaflet)
 library(leaflet.extras)
+
+#increase the size the map will render
 opts_chunk$set(fig.width=9, fig.height=8)
 
 ```
@@ -20,7 +22,6 @@ opts_chunk$set(fig.width=9, fig.height=8)
 ```{r load data, include=FALSE}
 
 #sandy strom track data: https://www.nhc.noaa.gov/gis/archive_besttrack_results.php?id=al18&year=2012&name=Hurricane%20SANDY
-#sandy flood data: https://www.nhc.noaa.gov/gis/archive_psurge_results.php?id=al18&year=2012&name=Hurricane%20SANDY
 #US cities with populations: https://gist.github.com/Miserlou/c5cd8364bf9b2420bb29
 
 
@@ -31,7 +32,7 @@ us.cities.fp <- file.path('.', 'cities.json', fsep = .Platform$file.sep)
 
 
 #read in data
-# leaflet only supports SF file formats for this type of data. 
+# leaflet only supports SF file formats for this type of data
 sandy.track <- st_read(sandy.track.fp)
 sandy.radius <- st_read(sandy.raidus.fp)
 #reading in a json file
@@ -70,22 +71,22 @@ us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, pop
 
 ```{r echo=FALSE}
 
-#creating color pallette for map
+#creating color pallette for storm track
 stormpal <- colorFactor(c("#6eff33", "#f0ff33", "#ffe333", "#ffc433", "#ff6b33", "#f32222", "#c20404"), c("Low", "Tropical Depression", "Extratropical Cyclone", "Tropical Storm", "Hurricane1", "Hurricane2", "Hurricane3"))
 
-#plot sandy track and color based on storm type
+#plot hurrican sandy map
 leaflet()%>% 
-  setView(-74.4493175, 29.356908, zoom = 4) %>% 
-  addProviderTiles("Stamen.Toner", options = providerTileOptions(noWrap = TRUE)) %>% 
+  setView(-74.4493175, 29.356908, zoom = 4) %>% #set the view of the map
+  addProviderTiles("Stamen.Toner", options = providerTileOptions(noWrap = TRUE)) %>% #chose a black and white map so colors will pop
   addCircles(data = us.cities, lng = ~longitude, lat = ~latitude, weight = 1,
-    radius = ~sqrt(as.numeric(as.factor(population)))*100, color = '#da0feb') %>% 
+    radius = ~sqrt(as.numeric(as.factor(population)))*100, color = '#da0feb') %>% #added the circles over large population areas and legend for this layer
   addLegend(color = '#da0feb', labels = 'Major Population Center', opacity = 1) %>% 
-  addPolylines(data = sandy.track, color = ~stormpal(STORMTYPE), group = "Storm Track") %>% 
-  addLegend(colors = c("#c20404", "#f32222", "#ff6b33", "#ffc433", "#ffe333", "#f0ff33", "#6eff33"), labels = c("Hurricane3", "Hurricane2", "Hurricane1", "Tropical Storm", "Extratropical Cyclone", "Tropical Depression", "Low" ), opacity = 1) %>% 
-  addPolygons(data = sandy.radius, group = "Storm Size") %>% 
+  addPolylines(data = sandy.track, color = ~stormpal(STORMTYPE), group = "Storm Track") %>% #add the strom track line
+  addLegend(colors = c("#c20404", "#f32222", "#ff6b33", "#ffc433", "#ffe333", "#f0ff33", "#6eff33"), labels = c("Hurricane3", "Hurricane2", "Hurricane1", "Tropical Storm", "Extratropical Cyclone", "Tropical Depression", "Low"), title = "Storm Track", opacity = 1) %>% #manually add in storm track legend becuase the feature is not supported to do it atuomatically
+  addPolygons(data = sandy.radius, group = "Storm Size") %>% # add the size of the hurricane
   addLayersControl(
     overlayGroups = c("Storm Track",  "Storm Size"),
-    options = layersControlOptions(collapsed = FALSE)) 
+    options = layersControlOptions(collapsed = FALSE)) #add in the controls to turn the layers on and off
 
 
 ```
