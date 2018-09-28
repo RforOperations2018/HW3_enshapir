@@ -1,18 +1,19 @@
 ---
-title: "HW3"
+title: "HW3: Hurricane Sandy"
 author: "enshapir"
-date: "September 25, 2018"
+date: "September 29, 2018"
 output: html_document
 ---
 
 ```{r load libraries, include=FALSE}
+library(knitr)
 library(tidyverse)
 library(rjson)
 library(sf)
-library(maptools)
 library(rgdal)
 library(leaflet)
 library(leaflet.extras)
+opts_chunk$set(fig.width=9, fig.height=8)
 
 ```
 
@@ -74,6 +75,7 @@ stormpal <- colorFactor(c("#6eff33", "#f0ff33", "#ffe333", "#ffc433", "#ff6b33",
 
 #plot sandy track and color based on storm type
 leaflet()%>% 
+  setView(-74.4493175, 29.356908, zoom = 4) %>% 
   addProviderTiles("Stamen.Toner", options = providerTileOptions(noWrap = TRUE)) %>% 
   addCircles(data = us.cities, lng = ~longitude, lat = ~latitude, weight = 1,
     radius = ~sqrt(as.numeric(as.factor(population)))*100, color = '#da0feb') %>% 
@@ -85,7 +87,6 @@ leaflet()%>%
     overlayGroups = c("Storm Track",  "Storm Size"),
     options = layersControlOptions(collapsed = FALSE)) 
 
- 
 
 ```
 
