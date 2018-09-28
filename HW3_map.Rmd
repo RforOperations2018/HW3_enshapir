@@ -73,7 +73,8 @@ us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, pop
 stormpal <- colorFactor(c("#6eff33", "#f0ff33", "#ffe333", "#ffc433", "#ff6b33", "#f32222", "#c20404"), c("Low", "Tropical Depression", "Extratropical Cyclone", "Tropical Storm", "Hurricane1", "Hurricane2", "Hurricane3"))
 
 #plot sandy track and color based on storm type
-leaflet()%>% addTiles() %>%
+leaflet()%>% 
+  addProviderTiles("Stamen.Toner", options = providerTileOptions(noWrap = TRUE)) %>% 
   addCircles(data = us.cities, lng = ~longitude, lat = ~latitude, weight = 1,
     radius = ~sqrt(as.numeric(as.factor(population)))*100, color = '#da0feb') %>% 
   addLegend(color = '#da0feb', labels = 'Major Population Center', opacity = 1) %>% 
