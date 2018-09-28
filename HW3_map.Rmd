@@ -74,26 +74,17 @@ us.cities <- data.frame(city, growth_from_2000_to_2013, latitude, longitude, pop
 ```{r}
 
 #creating color pallette for map
-pal <- colorNumeric(c("green", "red"), 1:2)
-
-factpal <- colorFactor(topo.colors(7), sandy.track$STROMTYPE)
+stormpal <- colorFactor(c("#6eff33", "#f0ff33", "#ffe333", "#ffc433", "#ff6b33", "#f32222", "#c20404"), c("Low", "Tropical Depression", "Extratropical Cyclone", "Tropical Storm", "Hurricane1", "Hurricane2", "Hurricane3"))
 
 #plot sandy track and color based on storm type
 leaflet()%>% addTiles() %>%
-  addPolylines(data = sandy.track, color = ~factpal(STORMTYPE), group = "Storm Track") %>% 
+  addPolylines(data = sandy.track, color = ~stormpal(STORMTYPE), group = "Storm Track") %>% 
+  addLegend(colors = c("#c20404", "#f32222", "#ff6b33", "#ffc433", "#ffe333", "#f0ff33", "#6eff33"), labels = c("Hurricane3", "Hurricane2", "Hurricane1", "Tropical Storm", "Extratropical Cyclone", "Tropical Depression", "Low" ), opacity = 1) %>% 
   addPolygons(data = sandy.radius, group = "Storm Size") %>% 
   addLayersControl(
     overlayGroups = c("Storm Track",  "Storm Size"),
-    options = layersControlOptions(collapsed = FALSE)
-  )
-
-
-
-leaflet(test1[[1]]) %>% addPolylines(lng=~lng,lat=~lat)
-
-plot(world["continent"], reset = FALSE)
-plot(test1)
-test1$geometry[[1]][2]
+    options = layersControlOptions(collapsed = FALSE)) 
+ 
 
 ```
 
