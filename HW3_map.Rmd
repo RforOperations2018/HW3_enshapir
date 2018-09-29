@@ -83,6 +83,7 @@ leaflet()%>%
   addLegend(color = '#da0feb', labels = 'Major Population Center', opacity = 1) %>% 
   addPolylines(data = sandy.track, color = ~stormpal(STORMTYPE), group = "Storm Track") %>% #add the strom track line
   addLegend(colors = c("#c20404", "#f32222", "#ff6b33", "#ffc433", "#ffe333", "#f0ff33", "#6eff33"), labels = c("Hurricane3", "Hurricane2", "Hurricane1", "Tropical Storm", "Extratropical Cyclone", "Tropical Depression", "Low"), title = "Storm Track", opacity = 1) %>% #manually add in storm track legend becuase the feature is not supported to do it atuomatically
+  # Since you were manually creating your legend anyway, I think you could have put all of them together, but maybe that would look silly, so I took off a whole .2 points
   addPolygons(data = sandy.radius, group = "Storm Size") %>% # add the size of the hurricane
   addLayersControl(
     overlayGroups = c("Storm Track",  "Storm Size"),
